@@ -1,197 +1,197 @@
 # Mode: New Task — Template Reference
 
-Este reference contiene las plantillas completas para el modo New Task. Usar cuando el usuario quiere crear una tarea nueva en ClickUp basada en lo que se discutió en la sesión técnica.
+This reference contains the complete templates for the New Task mode. Use when the user wants to create a new task in ClickUp based on what was discussed in the technical session.
 
 ---
 
-## Principios del New Task
+## New Task Principles
 
-Una New Task es una **definición de trabajo**, no un resumen de sesión. Debe:
+A New Task is a **work definition**, not a session summary. It must:
 
-- Ser ejecutable — otro developer puede tomarla y empezar a trabajar sin preguntar nada
-- Tener criterios de aceptación — define cuándo la tarea está "terminada"
-- Incluir contexto suficiente — el "por qué" es tan importante como el "qué"
-- Escalar con la complejidad — una tarea de config necesita 5 líneas, una tarea de feature arquitectónica necesita secciones completas con scope técnico
+- Be executable — another developer can pick it up and start working without asking anything
+- Have acceptance criteria — defines when the task is "done"
+- Include sufficient context — the "why" is as important as the "what"
+- Scale with complexity — a config task needs 5 lines, an architectural feature task needs complete sections with technical scope
 
 ---
 
-## Template por nivel de complejidad
+## Template by complexity level
 
-### Trivial (tarea de configuración, cleanup, fix puntual)
+### Trivial (configuration task, cleanup, point fix)
 
 ```markdown
-## [Título descriptivo de la tarea]
+## [Descriptive task title]
 
-**Objetivo:** [qué debe lograrse, en una oración]
+**Objective:** [what should be achieved, in one sentence]
 
 **Scope:**
-- [acción concreta 1]
-- [acción concreta 2]
+- [concrete action 1]
+- [concrete action 2]
 
-**Criterios de aceptación:**
-- [ ] [criterio verificable]
+**Acceptance criteria:**
+- [ ] [verifiable criterion]
 ```
 
-Ejemplo:
+Example:
 
 ```markdown
-## Actualizar versión de Flutter SDK a 3.24.0 en CI
+## Update Flutter SDK version to 3.24.0 in CI
 
-**Objetivo:** Actualizar la versión de Flutter en el workflow de CI para habilitar native test sharding.
+**Objective:** Update the Flutter version in the CI workflow to enable native test sharding.
 
 **Scope:**
-- Cambiar `flutter-version` de `3.19.0` a `3.24.0` en `.github/workflows/ci.yml`
-- Verificar que todos los jobs pasen con la nueva versión
+- Change `flutter-version` from `3.19.0` to `3.24.0` in `.github/workflows/ci.yml`
+- Verify that all jobs pass with the new version
 
-**Criterios de aceptación:**
-- [ ] CI pipeline pasa en verde con Flutter 3.24.0
-- [ ] No hay regresiones en los 4 test shards
+**Acceptance criteria:**
+- [ ] CI pipeline passes green with Flutter 3.24.0
+- [ ] No regressions in the 4 test shards
 ```
 
 ---
 
-### Estándar (feature, bugfix planificado, refactor de un módulo)
+### Standard (feature, planned bugfix, single-module refactor)
 
 ```markdown
-## [Título descriptivo de la tarea]
+## [Descriptive task title]
 
-### Contexto
-[Por qué se necesita esta tarea. Qué problema resuelve o qué valor agrega. 2–4 oraciones. Incluir background técnico relevante.]
+### Context
+[Why this task is needed. What problem it solves or what value it adds. 2–4 sentences. Include relevant technical background.]
 
-### Objetivo
-[Qué debe lograrse cuando esta tarea esté completa. Resultado esperado claro.]
+### Objective
+[What should be achieved when this task is complete. Clear expected result.]
 
-### Scope técnico
-- [cambio o implementación 1]
-- [cambio o implementación 2]
-- [cambio o implementación 3]
+### Technical scope
+- [change or implementation 1]
+- [change or implementation 2]
+- [change or implementation 3]
 
-### Archivos involucrados
-- `path/to/file.dart` — [qué necesita cambiar]
-- `path/to/other_file.dart` — [qué necesita cambiar]
+### Files involved
+- `path/to/file.dart` — [what needs to change]
+- `path/to/other_file.dart` — [what needs to change]
 
-### Criterios de aceptación
-- [ ] [criterio verificable 1]
-- [ ] [criterio verificable 2]
-- [ ] [criterio verificable 3]
-- [ ] Tests unitarios cubren el cambio
-- [ ] No hay regresiones en tests existentes
+### Acceptance criteria
+- [ ] [verifiable criterion 1]
+- [ ] [verifiable criterion 2]
+- [ ] [verifiable criterion 3]
+- [ ] Unit tests cover the change
+- [ ] No regressions in existing tests
 
-### Notas técnicas
-- [contexto técnico relevante para quien tome la tarea]
-- [referencia a decisión técnica tomada en la sesión, si aplica]
+### Technical notes
+- [relevant technical context for whoever picks up the task]
+- [reference to technical decision made in the session, if applicable]
 
-### Dependencias
-- [depende de tarea/PR/servicio — si aplica]
+### Dependencies
+- [depends on task/PR/service — if applicable]
 ```
 
-Ejemplo:
+Example:
 
 ```markdown
-## Implementar cancelación de stream en ProductDetailBloc al hacer dispose
+## Implement stream cancellation in ProductDetailBloc on dispose
 
-### Contexto
-La pantalla de detalle de producto crashea al rotar el dispositivo en Android. El error `StateError: Cannot emit new states after calling close` indica que el Bloc sigue recibiendo eventos del WebSocket después de `dispose()`. Esto afecta a todos los usuarios Android y ocurre consistentemente en landscape → portrait rotation.
+### Context
+The product detail screen crashes when rotating the device on Android. The error `StateError: Cannot emit new states after calling close` indicates the Bloc continues receiving events from the WebSocket after `dispose()`. This affects all Android users and occurs consistently on landscape → portrait rotation.
 
-### Objetivo
-El `ProductDetailBloc` debe cancelar su suscripción al WebSocket stream cuando se cierre, sin romper el cache de datos que se usa al navegar entre tabs.
+### Objective
+The `ProductDetailBloc` must cancel its subscription to the WebSocket stream when closed, without breaking the data cache used when navigating between tabs.
 
-### Scope técnico
-- Agregar `cancelOnDispose` del package `bloc_concurrency` al constructor del Bloc
-- Escribir unit test que verifica que no se emiten estados después de `close()`
-- Verificar que el cache de producto sigue funcionando al navegar entre tabs
+### Technical scope
+- Add `cancelOnDispose` from the `bloc_concurrency` package to the Bloc constructor
+- Write a unit test that verifies no states are emitted after `close()`
+- Verify that the product cache still works when navigating between tabs
 
-### Archivos involucrados
-- `lib/features/product/bloc/product_detail_bloc.dart` — agregar `cancelOnDispose`
-- `test/features/product/bloc/product_detail_bloc_test.dart` — nuevo test de dispose
+### Files involved
+- `lib/features/product/bloc/product_detail_bloc.dart` — add `cancelOnDispose`
+- `test/features/product/bloc/product_detail_bloc_test.dart` — new dispose test
 
-### Criterios de aceptación
-- [ ] No se produce `StateError` al rotar el dispositivo en la pantalla de detalle
-- [ ] El cache de producto persiste al navegar entre tabs
-- [ ] Unit test verifica que no hay emisiones después de `close()`
-- [ ] Smoke test manual en Android confirma el fix
+### Acceptance criteria
+- [ ] No `StateError` is produced when rotating the device on the detail screen
+- [ ] The product cache persists when navigating between tabs
+- [ ] Unit test verifies no emissions after `close()`
+- [ ] Manual smoke test on Android confirms the fix
 
-### Notas técnicas
-- Se eligió `cancelOnDispose` en lugar de `autoDispose` porque `autoDispose` destruiría el Bloc al salir del widget, perdiendo el cache
-- Verificar si el mismo pattern aplica al `CartBloc` que tiene un stream similar
-```
-
----
-
-### Compleja (feature arquitectónica, epics, investigación con implementación)
-
-```markdown
-## [Título descriptivo de la tarea]
-
-### Contexto
-[Background completo del problema o iniciativa. Incluir: motivación, estado actual del sistema, por qué el approach actual es insuficiente. 4–6 oraciones.]
-
-### Objetivo
-[Resultado esperado al completar la tarea. Debe ser medible o verificable.]
-
-### Alcance
-**Incluye:**
-- [concepto o componente 1]
-- [concepto o componente 2]
-- [concepto o componente 3]
-
-**No incluye (fuera de scope):**
-- [exclusión explícita 1 — para evitar scope creep]
-- [exclusión explícita 2]
-
-### Diseño técnico
-[Descripción del approach técnico acordado. Incluir la decisión y su razón. Si hubo alternativas descartadas, mencionarlas brevemente.]
-
-### Scope técnico
-- [cambio o implementación 1 — con suficiente detalle para ejecutar]
-- [cambio o implementación 2]
-- [cambio o implementación 3]
-- [cambio o implementación 4]
-
-### Archivos involucrados
-**Nuevos:**
-- `path/to/new_file.dart` — [propósito del archivo]
-
-**Modificados:**
-- `path/to/existing_file.dart` — [qué necesita cambiar]
-
-**Potencialmente eliminados:**
-- `path/to/old_file.dart` — [razón de eliminación]
-
-### Criterios de aceptación
-- [ ] [criterio verificable 1]
-- [ ] [criterio verificable 2]
-- [ ] [criterio verificable 3]
-- [ ] [criterio de testing]
-- [ ] [criterio de performance, si aplica]
-
-### Riesgos identificados
-- **[riesgo 1]** — [posible impacto y mitigación sugerida]
-- **[riesgo 2]** — [posible impacto]
-
-### Deuda técnica relacionada
-- [deuda existente que esta tarea descubrió o amplifica]
-
-### Dependencias
-- [depende de tarea/PR/servicio]
-- [bloquea a tarea/feature]
-
-### Sub-tareas sugeridas
-Si la tarea es lo suficientemente grande, proponer una descomposición:
-- [ ] Sub-tarea 1: [descripción]
-- [ ] Sub-tarea 2: [descripción]
-- [ ] Sub-tarea 3: [descripción]
+### Technical notes
+- `cancelOnDispose` was chosen instead of `autoDispose` because `autoDispose` would destroy the Bloc when leaving the widget, losing the cache
+- Check if the same pattern applies to `CartBloc` which has a similar stream
 ```
 
 ---
 
-## Reglas del New Task
+### Complex (architectural feature, epics, investigation with implementation)
 
-1. **Título accionable** — el título debe describir el trabajo, no el problema. "Implementar cancelación de stream en ProductDetailBloc" > "El Bloc crashea".
-2. **Contexto con "por qué"** — otro developer necesita entender la motivación, no solo los pasos.
-3. **Criterios de aceptación verificables** — cada criterio debe poder verificarse con un sí/no. "El Bloc funciona bien" no es verificable. "No se produce StateError al rotar" sí lo es.
-4. **Scope explícito** — en tareas complejas, definir qué está **fuera** de scope es tan importante como definir qué está **dentro**.
-5. **Archivos con path completo** — otro developer debe poder encontrar los archivos sin buscar.
-6. **No incluir implementación detallada** — la tarea describe el "qué" y el "por qué", no el "cómo" paso a paso. El developer que la tome decide el approach exacto.
-7. **Eliminar secciones vacías** — si "Riesgos" no aplica, eliminar la sección completa.
-8. **Un tema por tarea** — si la sesión cubrió 2+ temas, crear una tarea separada para cada uno.
+```markdown
+## [Descriptive task title]
+
+### Context
+[Complete background of the problem or initiative. Include: motivation, current system state, why the current approach is insufficient. 4–6 sentences.]
+
+### Objective
+[Expected result upon completing the task. Must be measurable or verifiable.]
+
+### Scope
+**Includes:**
+- [concept or component 1]
+- [concept or component 2]
+- [concept or component 3]
+
+**Does not include (out of scope):**
+- [explicit exclusion 1 — to avoid scope creep]
+- [explicit exclusion 2]
+
+### Technical design
+[Description of the agreed technical approach. Include the decision and its rationale. If there were discarded alternatives, mention them briefly.]
+
+### Technical scope
+- [change or implementation 1 — with sufficient detail to execute]
+- [change or implementation 2]
+- [change or implementation 3]
+- [change or implementation 4]
+
+### Files involved
+**New:**
+- `path/to/new_file.dart` — [file purpose]
+
+**Modified:**
+- `path/to/existing_file.dart` — [what needs to change]
+
+**Potentially deleted:**
+- `path/to/old_file.dart` — [reason for deletion]
+
+### Acceptance criteria
+- [ ] [verifiable criterion 1]
+- [ ] [verifiable criterion 2]
+- [ ] [verifiable criterion 3]
+- [ ] [testing criterion]
+- [ ] [performance criterion, if applicable]
+
+### Identified risks
+- **[risk 1]** — [potential impact and suggested mitigation]
+- **[risk 2]** — [potential impact]
+
+### Related technical debt
+- [existing debt that this task discovered or amplifies]
+
+### Dependencies
+- [depends on task/PR/service]
+- [blocks task/feature]
+
+### Suggested sub-tasks
+If the task is large enough, propose a decomposition:
+- [ ] Sub-task 1: [description]
+- [ ] Sub-task 2: [description]
+- [ ] Sub-task 3: [description]
+```
+
+---
+
+## New Task Rules
+
+1. **Actionable title** — the title should describe the work, not the problem. "Implement stream cancellation in ProductDetailBloc" > "The Bloc crashes".
+2. **Context with "why"** — another developer needs to understand the motivation, not just the steps.
+3. **Verifiable acceptance criteria** — each criterion must be verifiable with a yes/no. "The Bloc works well" is not verifiable. "No StateError is produced on rotation" is.
+4. **Explicit scope** — in complex tasks, defining what is **out of** scope is as important as defining what is **in** scope.
+5. **Files with full path** — another developer must be able to find the files without searching.
+6. **Do not include detailed implementation** — the task describes the "what" and the "why", not the step-by-step "how". The developer who picks it up decides the exact approach.
+7. **Remove empty sections** — if "Risks" does not apply, remove the entire section.
+8. **One topic per task** — if the session covered 2+ topics, create a separate task for each one.
