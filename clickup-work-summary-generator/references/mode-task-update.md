@@ -1,179 +1,179 @@
 # Mode: Task Update — Template Reference
 
-Este reference contiene las plantillas completas para el modo Task Update. Usar cuando el usuario quiere registrar progreso sobre una tarea que ya existe en ClickUp.
+This reference contains the complete templates for the Task Update mode. Use when the user wants to log progress on a task that already exists in ClickUp.
 
 ---
 
-## Principios del Task Update
+## Task Update Principles
 
-Un Task Update es un **registro de progreso**, no una reescritura de la tarea. Debe:
+A Task Update is a **progress record**, not a task rewrite. It must:
 
-- Ser aditivo — se agrega al historial de la tarea, no lo reemplaza
-- Tener fecha — cada update es un snapshot temporal
-- Ser autocontenido — otro developer puede entender qué pasó sin leer updates anteriores
-- Escalar con la complejidad — un bugfix trivial necesita 3 líneas, un refactor arquitectónico necesita secciones completas
+- Be additive — it is appended to the task history, not replacing it
+- Have a date — each update is a temporal snapshot
+- Be self-contained — another developer can understand what happened without reading previous updates
+- Scale with complexity — a trivial bugfix needs 3 lines, an architectural refactor needs complete sections
 
 ---
 
-## Template por nivel de complejidad
+## Template by complexity level
 
-### Trivial (bugfix de una línea, cambio de config, typo)
+### Trivial (one-line bugfix, config change, typo)
 
 ```markdown
 ## Update — [YYYY-MM-DD]
 
-**Qué se hizo:** [descripción en una oración]
+**What was done:** [description in one sentence]
 
-**Archivos:** `path/to/file.ext`
+**Files:** `path/to/file.ext`
 ```
 
-Ejemplo:
+Example:
 
 ```markdown
 ## Update — 2026-03-10
 
-**Qué se hizo:** Se corrigió typo en el label del botón de login ("Inicar" → "Iniciar").
+**What was done:** Fixed typo in the login button label ("Inicar" → "Iniciar").
 
-**Archivos:** `lib/features/auth/presentation/widgets/login_button.dart`
+**Files:** `lib/features/auth/presentation/widgets/login_button.dart`
 ```
 
 ---
 
-### Estándar (feature simple, bugfix con diagnóstico, refactor de un módulo)
+### Standard (simple feature, bugfix with diagnosis, single-module refactor)
 
 ```markdown
 ## Update — [YYYY-MM-DD]
 
-### Contexto
-[Qué se estaba resolviendo o implementando. 1–3 oraciones.]
+### Context
+[What was being resolved or implemented. 1–3 sentences.]
 
-### Qué se hizo
-- [bullet 1 — acción concreta]
-- [bullet 2 — acción concreta]
-- [bullet 3 — acción concreta]
+### What was done
+- [bullet 1 — concrete action]
+- [bullet 2 — concrete action]
+- [bullet 3 — concrete action]
 
-### Decisiones técnicas
-- **[decisión]** — [razón tal como se discutió]
+### Technical decisions
+- **[decision]** — [reason as discussed]
 
-### Archivos modificados
-- `path/to/file.dart` — [qué cambió en este archivo]
-- `path/to/other_file.dart` — [qué cambió]
+### Modified files
+- `path/to/file.dart` — [what changed in this file]
+- `path/to/other_file.dart` — [what changed]
 
 ### Commits
-- `hash` — `mensaje del commit`
+- `hash` — `commit message`
 
-### Pendientes
-- [ ] [pendiente concreto 1]
-- [ ] [pendiente concreto 2]
+### Open items
+- [ ] [concrete open item 1]
+- [ ] [concrete open item 2]
 
-### Riesgos / Notas
-- [riesgo o nota relevante]
+### Risks / Notes
+- [relevant risk or note]
 ```
 
-Ejemplo:
+Example:
 
 ```markdown
 ## Update — 2026-03-10
 
-### Contexto
-La pantalla de detalle de producto crasheaba al rotar el dispositivo en Android. El error aparecía como `StateError: Cannot emit new states after calling close`.
+### Context
+The product detail screen was crashing when rotating the device on Android. The error appeared as `StateError: Cannot emit new states after calling close`.
 
-### Qué se hizo
-- Se diagnosticó que el `ProductDetailBloc` seguía emitiendo estados después de `dispose()` porque el stream de WebSocket no se cancelaba
-- Se agregó `cancelOnDispose` del package `bloc_concurrency` al Bloc
-- Se escribió un unit test que verifica que no se emiten estados después de `close()`
+### What was done
+- Diagnosed that the `ProductDetailBloc` was still emitting states after `dispose()` because the WebSocket stream was not being canceled
+- Added `cancelOnDispose` from the `bloc_concurrency` package to the Bloc
+- Wrote a unit test that verifies no states are emitted after `close()`
 
-### Decisiones técnicas
-- **Usar `cancelOnDispose` en lugar de `autoDispose`** — `autoDispose` destruye el Bloc al salir del widget, pero necesitamos preservar el cache cuando el user navega entre tabs
+### Technical decisions
+- **Use `cancelOnDispose` instead of `autoDispose`** — `autoDispose` destroys the Bloc when leaving the widget, but we need to preserve the cache when the user navigates between tabs
 
-### Archivos modificados
-- `lib/features/product/bloc/product_detail_bloc.dart` — agregado `cancelOnDispose` en el constructor
-- `test/features/product/bloc/product_detail_bloc_test.dart` — nuevo test `emits nothing after close`
+### Modified files
+- `lib/features/product/bloc/product_detail_bloc.dart` — added `cancelOnDispose` in the constructor
+- `test/features/product/bloc/product_detail_bloc_test.dart` — new test `emits nothing after close`
 
 ### Commits
 - `a1b2c3d` — `fix(product): cancel stream on bloc dispose to prevent StateError`
 
-### Pendientes
-- [ ] Verificar que el mismo pattern aplica al `CartBloc` (tiene un stream similar)
-- [ ] Agregar golden tests para la pantalla de detalle en modo landscape
+### Open items
+- [ ] Verify that the same pattern applies to `CartBloc` (it has a similar stream)
+- [ ] Add golden tests for the detail screen in landscape mode
 
-### Riesgos / Notas
-- Si el backend cambia a SSE en lugar de WebSocket, el `cancelOnDispose` puede no cubrir la desconexión correctamente
+### Risks / Notes
+- If the backend switches to SSE instead of WebSocket, `cancelOnDispose` may not handle the disconnection correctly
 ```
 
 ---
 
-### Compleja (refactor arquitectónico, feature multi-módulo, investigación técnica extensa)
+### Complex (architectural refactor, multi-module feature, extensive technical investigation)
 
 ```markdown
 ## Update — [YYYY-MM-DD]
 
-### Contexto
-[Descripción del problema o iniciativa. Incluir por qué se inició este trabajo y qué lo motivó. 3–5 oraciones.]
+### Context
+[Description of the problem or initiative. Include why this work was started and what motivated it. 3–5 sentences.]
 
-### Diagnóstico / Investigación
-[Análisis realizado. Qué se descubrió, qué datos se revisaron, qué hipótesis se probaron.]
+### Diagnosis / Investigation
+[Analysis performed. What was discovered, what data was reviewed, what hypotheses were tested.]
 
-### Alternativas exploradas
-| Alternativa | Evaluación | Resultado |
+### Explored alternatives
+| Alternative | Evaluation | Result |
 |---|---|---|
-| [Opción A] | [pros/cons tal como se discutieron] | Descartada — [razón] |
-| [Opción B] | [pros/cons tal como se discutieron] | **Elegida** — [razón] |
-| [Opción C] | [pros/cons tal como se discutieron] | Descartada — [razón] |
+| [Option A] | [pros/cons as discussed] | Discarded — [reason] |
+| [Option B] | [pros/cons as discussed] | **Chosen** — [reason] |
+| [Option C] | [pros/cons as discussed] | Discarded — [reason] |
 
-### Qué se hizo
-- [bullet 1 — acción concreta con contexto suficiente]
-- [bullet 2 — acción concreta]
-- [bullet 3 — acción concreta]
-- [bullet 4 — acción concreta]
+### What was done
+- [bullet 1 — concrete action with sufficient context]
+- [bullet 2 — concrete action]
+- [bullet 3 — concrete action]
+- [bullet 4 — concrete action]
 
-### Decisiones técnicas
-- **[decisión 1]** — [razón tal como se discutió, incluyendo tradeoffs]
-- **[decisión 2]** — [razón]
+### Technical decisions
+- **[decision 1]** — [reason as discussed, including tradeoffs]
+- **[decision 2]** — [reason]
 
-### Archivos modificados
-**Nuevos:**
-- `path/to/new_file.dart` — [propósito]
+### Modified files
+**New:**
+- `path/to/new_file.dart` — [purpose]
 
-**Modificados:**
-- `path/to/file.dart` — [qué cambió y por qué]
+**Modified:**
+- `path/to/file.dart` — [what changed and why]
 
-**Eliminados:**
-- `path/to/old_file.dart` — [razón de eliminación]
+**Deleted:**
+- `path/to/old_file.dart` — [reason for deletion]
 
 ### Commits
-- `hash1` — `mensaje del commit 1`
-- `hash2` — `mensaje del commit 2`
+- `hash1` — `commit message 1`
+- `hash2` — `commit message 2`
 
-### Datos cuantitativos
-- [métrica 1: ej. "El pipeline bajó de 40 min a 10 min"]
-- [métrica 2: ej. "Se eliminaron 340 líneas de código duplicado"]
+### Quantitative data
+- [metric 1: e.g. "The pipeline dropped from 40 min to 10 min"]
+- [metric 2: e.g. "340 lines of duplicate code were removed"]
 
-### Deuda técnica identificada
-- [deuda 1 — qué se descubrió que necesita arreglo pero no se resolvió en esta sesión]
-- [deuda 2]
+### Identified technical debt
+- [debt 1 — what was discovered that needs fixing but was not resolved in this session]
+- [debt 2]
 
-### Pendientes
-- [ ] [pendiente concreto 1]
-- [ ] [pendiente concreto 2]
-- [ ] [pendiente concreto 3]
+### Open items
+- [ ] [concrete open item 1]
+- [ ] [concrete open item 2]
+- [ ] [concrete open item 3]
 
-### Riesgos
-- [riesgo 1 — condición y posible impacto]
-- [riesgo 2]
+### Risks
+- [risk 1 — condition and potential impact]
+- [risk 2]
 
-### Dependencias
-- [depende de PR / tarea / servicio externo]
+### Dependencies
+- [depends on PR / task / external service]
 ```
 
 ---
 
-## Reglas del Task Update
+## Task Update Rules
 
-1. **Siempre incluir fecha** — el update es un snapshot temporal.
-2. **Usar el nivel de complejidad correcto** — no generar un template complejo para un bugfix trivial.
-3. **Archivos con path completo** — nunca "el archivo del bloc", siempre `lib/features/auth/bloc/login_bloc.dart`.
-4. **Pendientes como checkboxes** — ClickUp los renderiza como subtareas interactivas.
-5. **Eliminar secciones vacías** — si "Riesgos" no aplica, eliminar la sección. No escribir "N/A".
-6. **Cada bullet debe ser autocontenido** — otro developer debe entender el bullet sin leer la conversación.
-7. **No repetir la descripción original de la tarea** — el update es nuevo progreso, no contexto heredado.
+1. **Always include a date** — the update is a temporal snapshot.
+2. **Use the correct complexity level** — do not generate a complex template for a trivial bugfix.
+3. **Files with full path** — never "the bloc file", always `lib/features/auth/bloc/login_bloc.dart`.
+4. **Open items as checkboxes** — ClickUp renders them as interactive subtasks.
+5. **Remove empty sections** — if "Risks" does not apply, remove the section. Do not write "N/A".
+6. **Each bullet must be self-contained** — another developer must understand the bullet without reading the conversation.
+7. **Do not repeat the original task description** — the update is new progress, not inherited context.
