@@ -18,14 +18,36 @@ Converts technical work conversations into structured documentation ready to pas
 
 ---
 
+### 📝 Release Notes Generator
+
+Generates polished, stakeholder-friendly release notes for Flutter Android apps, directly from git history and tags. Designed for product owners, executives, clients, and QA leads, it filters technical noise and presents only user-facing value, business impact, and honest transparency.
+
+**Use for:** documenting production releases, summarizing changes between versions, communicating business impact, and presenting known issues or platform notes.
+
+- Filters out technical jargon, commit hashes, and internal identifiers
+- Groups changes by user-facing modules and impact level
+- Includes executive summary and visual flow diagrams (when relevant)
+- Adapts language and tone for non-technical audiences (Spanish by default)
+- Templates and writing guide ensure professional, consistent output
+
+**References:** [templates](release-notes-generator/references/templates.md) · [writing-guide](release-notes-generator/references/writing-guide.md) · [mermaid-flows](release-notes-generator/references/mermaid-flows.md)
+
+---
+
 ## Repository Structure
 
 ```
 productivity-skills/
 ├── README.md
-└── clickup-work-summary-generator/
+├── clickup-work-summary-generator/
+│   ├── SKILL.md
+│   └── references/
+│       ├── mode-task-update.md
+│       └── mode-new-task.md
+└── release-notes-generator/
     ├── SKILL.md
     └── references/
-        ├── mode-task-update.md
-        └── mode-new-task.md
+        ├── templates.md
+        ├── writing-guide.md
+        └── mermaid-flows.md
 ```
